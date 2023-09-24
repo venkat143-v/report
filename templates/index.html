@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>cats and dogs</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.456/pdf.js"></script>
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .imag {
+            background-image: url('../static/images/Picture1.png'); /* Replace this URL */
+            background-size: cover;
+            background-position: left;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: row-reverse;
+            text-align: right;
+            align-items: center;
+        }
+        .ipb{
+        	background: linear-gradient(to right,rgb(24, 173, 161), rgb(196, 224, 229));
+            background-size: cover;
+            background-position: left;
+
+       		margin-right: 7%;
+       		margin-top: 0%;
+       		height: 70vh;
+       		width: 400px;
+       		border-radius:3%;
+            -webkit-filter: drop-shadow(0px 0px 15px black);
+	        filter: drop-shadow(0px 0px 15px black);
+        }
+        .ipb h1{
+            
+            text-shadow: 2px 0px 5px lightyellow;
+            margin-top: 3%;
+            padding-right: 20%;
+            color: black;
+            font-size: 45px;
+            font-family: "Times New Roman";
+        }
+        .ipb #k{
+            margin-top: 7%;
+            margin-right: 43%;
+            text-shadow: 0px 0px 3px black;
+            font-size: 15px;
+            border: solid black;
+            font-family: "Times New Roman";
+            -webkit-filter: drop-shadow(0px 0px 5px black);
+            filter: drop-shadow(0px 0px 5px black);
+        }
+        .ipb input{
+            font-family: "Times New Roman";
+        }
+        .ipb .op{
+            background-image:url("../static/images/cure care copy[2082].png");
+            background-size: cover;
+            align-content: center;
+            display: flex;
+            height:60%;
+            width: 80%;
+            margin-left: 11%;
+            margin-top: 7%;
+        }
+        .titl{
+            background-image: url('../static/images/Picture2.png');
+            background-size: cover;
+            height:80%;
+            width: 800px;
+            margin-left: 0%;
+            margin-right: 10%;
+            text-align: center;
+        }
+        .titl h1{
+            font-size: 47px;
+            font-weight:bold;
+            text-transform: uppercase;
+            font-family: "fantasy";
+            filter: drop-shadow(-2px 0px 5px grey);
+        }
+        @keyframes textclip {
+        to {
+            background-position: 200% center;
+          }
+        }
+        .pdf-page {
+            page-break-before: always;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="imag">
+
+
+        <div class=ipb>
+            <h1>Upload Report</h1>
+            <form method = "POST" action="{{url_for('bulk')}}" enctype="multipart/form-data" id="pdfFile">
+                <input class="form-control "type="file" name="data" id="pwd" >
+                <button id="k" class="btn btn-success" type="submit" >classify</button>
+            </form>
+            <div class="op">
+            </div>
+        </div>
+        <div class="titl"  id="pdfContainer">
+            <iframe id="pdfViewer" {% if uploaded_filename %}src="{{ url_for('view_pdf', pdf_filename=uploaded_filename) }}"{% endif %} width="100%" height="600px"></iframe>
+            {% for page in pages %}
+            <object data="data:application/pdf;base64,{{ page }}" type="application/pdf" width="100%" height="600px"></object>
+        {% endfor %}
+
+        </div>
+    </div>
+<script>
+
+   document.addEventListener("DOMContentLoaded", function () {
+            const pdfViewerContainer = document.getElementById('pdfContainer');
+            const uploaded_filename = "{{ uploaded_filename }}"; // Get the uploaded_filename from the template
+
+            // Function to load and display all pages of the PDF
+            function loadPdf(pdfUrl) {
+                fetch(pdfUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.pages.forEach(pageData => {
+                            const iframe = document.createElement('iframe');
+                            iframe.src = `data:application/pdf;base64,${pageData}`;
+                            iframe.classList.add('pdf-page'); // Apply CSS class for styling
+                            pdfViewerContainer.appendChild(iframe);
+                        });
+                    })
+                    .catch(error => {
+                        console.error("Error loading PDF pages:", error);
+                    });
+            }
+
+            if (uploaded_filename) {
+                const pdfUrl = `/view_pdf/${uploaded_filename}`;
+                loadPdf(pdfUrl);
+            }
+        });
+
+    </script>
+</body>
+</html>
+
+
+
+
