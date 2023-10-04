@@ -2,8 +2,10 @@
 <html>
 <head>
     <title>CureTech</title>
+    <link rel="icon" href="../static/images/cure care copy[2082].png" type="image/x-icon">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.456/pdf.js"></script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <style>
@@ -102,7 +104,7 @@
         <div class=ipb>
             <h1>Upload Report</h1>
             <form method = "POST" action="{{url_for('bulk')}}" enctype="multipart/form-data" id="pdfFile">
-                <input class="form-control "type="file" name="data" id="pwd" >
+                <input class="form-control "type="file" name="data" id="pwd" accept=".pdf, .jpg, .png, .jpeg" onchange="validateFile(this)" >
                 <button id="k" class="btn btn-success" type="submit" >classify</button>
             </form>
             <div class="op">
@@ -144,6 +146,22 @@
                 loadPdf(pdfUrl);
             }
         });
+
+   function validateFile(input) {
+            const allowedTypes = [".pdf", ".jpg", ".jpeg", ".png", ".gif"];
+            const file = input.files[0];
+            if (file) {
+                const fileType = '.' + file.name.split('.').pop();
+                if (allowedTypes.includes(fileType)) {
+                    displayFileName(input);
+                    document.getElementById('error-message').textContent = '';
+                } else {
+                    input.value = ''; // Clear the input
+                    window.alert("This file format is not supported");
+                    document.getElementById('error-message').textContent = 'Only PDF and image files are allowed.';
+                }
+            }
+        }
 
     </script>
 </body>
